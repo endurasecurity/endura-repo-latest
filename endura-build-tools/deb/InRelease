@@ -1,0 +1,27 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Date: Mon, 24 Feb 2025 15:40:55 +0000
+MD5Sum:
+ 5909dfd51dc877fccbdd913b3de1b310             2005 Packages
+ d1f578b53d310db0a7871aebfa980263             1156 Packages.gz
+ f69fbf277c45809ca0521d8ef9d550c8               38 Release
+SHA1:
+ cb81fe273311bb5c04ad172c6d48116f37a7c368             2005 Packages
+ a5ce37fc26a2c8c9aff35379ab7ea9c8fb273e97             1156 Packages.gz
+ a5b2985814c185f7ed8d32ef17daddb2b8ca481b               38 Release
+SHA256:
+ 2bee06aaed1e8892615b4472f11b93e7f5b71ed409bfe2a6c23721a42a1cac57             2005 Packages
+ 34ecfeb6b2c3bf0200404480060b812b4e4f6c166fdb928d32393879def1873d             1156 Packages.gz
+ 7cbd39ff92ad8110c59da5fd7257a9bb906673a782ef2041b83669f4a46d11b3               38 Release
+SHA512:
+ 25f71a008fb95e2a6634670d9d84c62e37c75d84c4e47fc12c6ff12812db224756de50b48fe7dbb684f20468d90213942911e16565dd18f032856f415a906834             2005 Packages
+ fc39bc86ba369acf0d63d677a10a99b88be812d17d222ac399715dfb1333f2c8a491ff9129f8926ecfc754d961a6c2020ea852b8156ce019fcc09185847c9e44             1156 Packages.gz
+ 6ce93d22b6ec47f322642c0d1c9ff138a3085956941ea28df0cbaa1cf9aa49c6f1791bd2953a505481ad1245cb6dc20ad7b70eba4e34ea9d3268685bf46bfaad               38 Release
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQTQCvONnG9gRzkvrl+hRUATGN1+BwUCZ7yTBwAKCRChRUATGN1+
+BzD6AP9vk0JsIkO/4kuQaD4yniW4gFTPNS9WYHKzQxVxH6RK1QEAgDKO96GtXpdl
+bJjR8kdUf4baZlz2FcalTZ8ymBXRogo=
+=iynI
+-----END PGP SIGNATURE-----
