@@ -1,13 +1,13 @@
 Package: endura-cli-tools
-Version: 0.2.2.e0e48d0
+Version: 0.3.1.33d2ec4
 Architecture: amd64
 Maintainer: Infrared Security, LLC.
-Installed-Size: 10472
-Filename: ./endura-cli-tools_0.2.2.e0e48d0_amd64.deb
-Size: 2740444
-MD5sum: 6d37985d38d57d2f68aa2eb7ba37a18b
-SHA1: 8f64baf3b395cb3b75965287394e765690c12600
-SHA256: c45690ac5db1dc6e071235ba11b15c63e59affd07b92ab2e6459549c9cb9593b
+Installed-Size: 12432
+Filename: ./endura-cli-tools_0.3.1.33d2ec4_amd64.deb
+Size: 3383900
+MD5sum: 702f8e72ba6eab3104222a6086b9f3f7
+SHA1: 725bea9a17f23f8588b86d21037a5694ffc0fd04
+SHA256: cd9fd1738680338d5d19f26e7333a8c284bcc6412ca8e705fc521f8c32c32ba8
 Section: Development
 Priority: optional
 Description: cli tools
@@ -27,20 +27,6 @@ Description: cli tools
  ## ADDITIONAL CHECKS:
  .
  - Inventory of libraries being used
- - Execution of deleted binaries: check if inode == 0
- - [x] Fileless Execution:
-     -> track fds created via memfd_create per process
-     -> check if filename starts with "/proc/self/fd/" or "/dev/fd/" indicating
- executing from fd
-     -> extract fd from filename and see if found within "track fds" map
- .
- ## ISSUE: Who/what is allowed to kill our own process? use our socket?
-     [x] only root users not bound to a job can kill endura
-     -> only root users not bound to a job can interact with socket
- .
- ## ISSUE: not propagating attrs across forks
- - create a "tp/sched/sched_process_fork" eBPF program and copy job references
- from parent to child
  .
  ## BUG: mode derive failed
  .
