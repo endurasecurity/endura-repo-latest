@@ -1,13 +1,13 @@
 Package: endura-cli-tools
-Version: 0.4.1.9f2604c
+Version: 0.4.3.5cf6e08
 Architecture: amd64
 Maintainer: Infrared Security, LLC.
-Installed-Size: 11843
-Filename: ./endura-cli-tools_0.4.1.9f2604c_amd64.deb
-Size: 3114388
-MD5sum: e8f556ea08d4f517282fd5030dcc2a6b
-SHA1: b66d9f484b4d43899070774cd8610532a1381bbb
-SHA256: ce19e35a651fc3ceb7d4f7d5b475178117b07581678e8d0a7aea76baf8a0e0b2
+Installed-Size: 12023
+Filename: ./endura-cli-tools_0.4.3.5cf6e08_amd64.deb
+Size: 3202260
+MD5sum: 01721a33b6fc298028d6bb05de142dbd
+SHA1: ce2330dfe9cfdfde3f685b2a304d6e674129a7e3
+SHA256: 387f9e721845f19b8a4547dc396a41a43ffbebc17de727c78bc5b12a11c12cb8
 Section: Development
 Priority: optional
 Description: cli tools
@@ -28,13 +28,72 @@ Description: cli tools
  .
  - Inventory of libraries being used
  .
- ## BUG: mode derive failed
+ ## PRIORITY ISSUES
+ .
+ ### ISSUE: not all "writes" showing in "creates" for derive of demo app
+ .
+ - expecting to see all node_modules with a "write" to also have a "create"
+ given we're tracking node
+ - mknod hook not getting invoked for all? then why some?
+ -> UPDATE: appears it is getting invoked, but missing some due to timing issues
+ - need to re-think "derive" and use of storage
+ .
+ ## BACKLOG ISSUES
+ .
+ ### ISSUE: mode derive failed
  .
  - not all events getting processed before job is removed
  - temporary workaround in job stop command:
  .
      // FIXME: best effort to allow processing of remaining events
      std::thread::sleep(Duration::from_secs(3));
+ .
+ ### ISSUE: policy validation spread between model.rs and bpf/policy.rs
+ .
+ - need common expression parser and validator
+ .
+ ### ISSUE: some "writes" have empty dst path
+ .
+  - '/usr/bin/bash:'
+   - '/usr/bin/endura:'
+   - '/usr/bin/make:'
+   - '/usr/local/bin/node:'
+ .
+ ### ISSUE: what's causing us to track the actual runner itself?
+ .
+   execute:
+   - /home/runner/runners/2.322.0/bin/Runner.Worker:/usr/bin/bash
+   - /home/runner/runners/2.322.0/externals/node20/bin/node:/usr/bin/git
+   - /usr/bin/bash:/usr/bin/env
+   - /usr/bin/bash:/usr/bin/make
+   - /usr/bin/bash:/usr/bin/sleep
+   - /usr/bin/bash:/usr/bin/sudo
+   - /usr/bin/bash:/usr/local/lib/node_modules/npm/bin/npm-cli.js
+   -
+ /usr/bin/dash:/home/runner/work/endura-malware-demo/endura-malware-demo/node_modules/eslint/bin/eslint.js
+   - /usr/bin/dash:/usr/bin/basename
+   - /usr/bin/dash:/usr/bin/env
+   - /usr/bin/dash:/usr/bin/envsubst
+   - /usr/bin/dash:/usr/bin/gettext
+   - /usr/bin/dash:/usr/bin/sed
+   - /usr/bin/dash:/usr/bin/uname
+   - /usr/bin/dash:/usr/lib/git-core/git
+   - /usr/bin/env:/usr/local/bin/node
+   - /usr/bin/git:/usr/bin/dash
+   - /usr/bin/git:/usr/lib/git-core/git
+   - /usr/bin/git:/usr/lib/git-core/git-submodule
+   - /usr/bin/make:/usr/bin/bash
+   - /usr/bin/sudo:/usr/bin/endura
+   - /usr/local/bin/node:/usr/bin/dash
+ .
+ ## ISSUE: likely need an "overwrite" policy
+ .
+ - assume github actions and the demo app
+ -> runner is based on node (is this actually true?)
+ -> npm install run by node
+ -> node can write to anything in workspace
+ - where is the "git clone" equivalent in the server logs?
+ -> ANS: events were lost due to starting job before server ready
  .
  ## QUESTION: musl threading performance issues
  .
