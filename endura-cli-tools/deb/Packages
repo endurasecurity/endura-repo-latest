@@ -1,13 +1,13 @@
 Package: endura-cli-tools
-Version: 0.4.3.5cf6e08
+Version: 0.4.3.8e04ff4
 Architecture: amd64
 Maintainer: Infrared Security, LLC.
-Installed-Size: 12023
-Filename: ./endura-cli-tools_0.4.3.5cf6e08_amd64.deb
-Size: 3202260
-MD5sum: 01721a33b6fc298028d6bb05de142dbd
-SHA1: ce2330dfe9cfdfde3f685b2a304d6e674129a7e3
-SHA256: 387f9e721845f19b8a4547dc396a41a43ffbebc17de727c78bc5b12a11c12cb8
+Installed-Size: 12051
+Filename: ./endura-cli-tools_0.4.3.8e04ff4_amd64.deb
+Size: 3205136
+MD5sum: 89b50a4b5713a5b1e06e6aa9f292ca3a
+SHA1: b3f98197ab0ad93e064da1af53a5f17ba542d831
+SHA256: 8d1e5ab3019cc2881948268de82d8438eb2f98db9016b0a7d6e7f02abf037b8a
 Section: Development
 Priority: optional
 Description: cli tools
@@ -30,36 +30,12 @@ Description: cli tools
  .
  ## PRIORITY ISSUES
  .
- ### ISSUE: not all "writes" showing in "creates" for derive of demo app
- .
- - expecting to see all node_modules with a "write" to also have a "create"
- given we're tracking node
- - mknod hook not getting invoked for all? then why some?
- -> UPDATE: appears it is getting invoked, but missing some due to timing issues
- - need to re-think "derive" and use of storage
- .
- ## BACKLOG ISSUES
- .
- ### ISSUE: mode derive failed
- .
- - not all events getting processed before job is removed
- - temporary workaround in job stop command:
- .
-     // FIXME: best effort to allow processing of remaining events
-     std::thread::sleep(Duration::from_secs(3));
- .
- ### ISSUE: policy validation spread between model.rs and bpf/policy.rs
- .
- - need common expression parser and validator
- .
- ### ISSUE: some "writes" have empty dst path
- .
-  - '/usr/bin/bash:'
-   - '/usr/bin/endura:'
-   - '/usr/bin/make:'
-   - '/usr/local/bin/node:'
- .
  ### ISSUE: what's causing us to track the actual runner itself?
+ .
+ - runner executing with cwd set to job path. causes /usr/bin/endura tracking
+ should be untouchable
+ - why are we doing cwd? anything beyond the "container run"? maybe "cwd" only
+ matches should not trigger job_pin
  .
    execute:
    - /home/runner/runners/2.322.0/bin/Runner.Worker:/usr/bin/bash
@@ -85,6 +61,145 @@ Description: cli tools
    - /usr/bin/make:/usr/bin/bash
    - /usr/bin/sudo:/usr/bin/endura
    - /usr/local/bin/node:/usr/bin/dash
+ .
+ ### ISSUE: multiple ip address without hostname but we know are bound to
+ "cloudflare"
+ .
+ - added logic to detect cloudflare ips upfront, but "cloudflare" is not the
+ domain that was being accessed (alias)
+   - /usr/local/bin/node:104.16.0.35:443
+   - /usr/local/bin/node:104.16.1.35:443
+   - /usr/local/bin/node:104.16.24.34:443
+   - /usr/local/bin/node:104.16.25.34:443
+   - /usr/local/bin/node:104.16.26.34:443
+   - /usr/local/bin/node:104.16.27.34:443
+   - /usr/local/bin/node:104.16.28.34:443
+   - /usr/local/bin/node:104.16.3.35:443
+   - /usr/local/bin/node:104.16.30.34:443
+ .
+ ### ISSUE: derived policy does not include context like %workspace%, instead
+ showing real value
+ .
+ -
+ /usr/local/bin/node:/home/runner/work/endura-malware-demo/endura-malware-demo/node_modules/.bin
+ .
+ .
+ ### ISSUE: how can we normalize this
+ .
+ UPDATE: just returning parent path
+ UPDATE 2: not sure that's a good idea. reverted.
+ .
+ to just be node:[path]/node_modules?
+   -
+ /usr/local/bin/node:/home/runner/work/endura-malware-demo/endura-malware-demo/node_modules/word-wrap/index.js
+   -
+ /usr/local/bin/node:/home/runner/work/endura-malware-demo/endura-malware-demo/node_modules/word-wrap/package.json
+   -
+ /usr/local/bin/node:/home/runner/work/endura-malware-demo/endura-malware-demo/node_modules/yocto-queue
+   -
+ /usr/local/bin/node:/home/runner/work/endura-malware-demo/endura-malware-demo/node_modules/yocto-queue/index.d.ts
+ .
+ to just be .git?
+   -
+ /usr/lib/git-core/git:/home/runner/work/endura-malware-demo/endura-malware-demo/.git/HEAD
+   -
+ /usr/lib/git-core/git:/home/runner/work/endura-malware-demo/endura-malware-demo/.git/config
+   -
+ /usr/lib/git-core/git:/home/runner/work/endura-malware-demo/endura-malware-demo/.git/index
+   -
+ /usr/lib/git-core/git:/home/runner/work/endura-malware-demo/endura-malware-demo/.git/objects/09/tmp_obj_137KGD
+ .
+ to just be ~/.npm?
+   -
+ /usr/local/bin/node:/home/runner/.npm/_logs/2025-03-06T13_45_18_151Z-debug-0.log
+   -
+ /usr/local/bin/node:/home/runner/.npm/_logs/2025-03-06T13_45_20_594Z-debug-0.log
+   -
+ /usr/local/bin/node:/home/runner/.npm/_logs/2025-03-06T13_45_21_082Z-debug-0.log
+   -
+ /usr/local/bin/node:/home/runner/.npm/_logs/2025-03-06T13_45_22_600Z-debug-0.log
+   -
+ /usr/local/bin/node:/home/runner/.npm/_logs/2025-03-06T13_45_24_035Z-debug-0.log
+ .
+ ### [x] ISSUE: more candidate policy defaults
+ .
+ open:
+   - /usr/bin/bash:/etc/passwd
+   - /usr/bin/endura:/proc/sys/vm/overcommit_memory
+   - /usr/bin/git:/etc/host.conf
+   - /usr/bin/git:/etc/hosts
+   - /usr/bin/git:/etc/passwd
+   - /usr/bin/sudo:/etc/environment
+   - /usr/bin/sudo:/etc/group
+   - /usr/bin/sudo:/etc/host.conf
+   - /usr/bin/sudo:/etc/hosts
+   - /usr/bin/sudo:/etc/locale.conf
+   - /usr/bin/sudo:/etc/login.defs
+   - /usr/bin/sudo:/etc/pam.d/common-account
+   - /usr/bin/sudo:/etc/pam.d/common-auth
+   - /usr/bin/sudo:/etc/pam.d/common-password
+   - /usr/bin/sudo:/etc/pam.d/common-session
+   - /usr/bin/sudo:/etc/pam.d/common-session-noninteractive
+   - /usr/bin/sudo:/etc/pam.d/other
+   - /usr/bin/sudo:/etc/pam.d/sudo
+   - /usr/bin/sudo:/etc/passwd
+   - /usr/bin/sudo:/etc/security/capability.conf
+   - /usr/bin/sudo:/etc/security/limits.conf
+   - /usr/bin/sudo:/etc/security/limits.d
+   - /usr/bin/sudo:/etc/security/pam_env.conf
+   - /usr/bin/sudo:/etc/shadow
+   - /usr/lib/git-core/git:/dev/urandom
+   - /usr/local/bin/node:/run/systemd/resolve/stub-resolv.conf
+ .
+ ## ISSUE: how do we handle programs reading arbitrary /proc/[pid] paths?
+ .
+   - /usr/local/bin/node:/proc/2445/cgroup
+   - /usr/local/bin/node:/proc/2445/maps
+   - /usr/local/bin/node:/proc/2457/cgroup
+   - /usr/local/bin/node:/proc/2457/maps
+   - /usr/local/bin/node:/proc/2469/cgroup
+   - /usr/local/bin/node:/proc/2469/maps
+   - /usr/local/bin/node:/proc/2483/cgroup
+   - /usr/local/bin/node:/proc/2483/maps
+   - /usr/local/bin/node:/proc/2497/cgroup
+   - /usr/local/bin/node:/proc/2497/maps
+   - /usr/local/bin/node:/proc/2508/cgroup
+   - /usr/local/bin/node:/proc/2508/maps
+ .
+ ### [x] ISSUE: Need to expand capability prog to denote specific capabilities
+ permitted
+ .
+ ex: CAP_DAC_OVERRIDE for /usr/lib/git-core/git
+ .
+ ### [x] ISSUE: How are these programs triggering fileless execute?
+ .
+ - triggered via mprotect due to JIT (W then later X)
+ .
+ fileless:
+   execute:
+   - /home/runner/runners/2.322.0/externals/node20/bin/node
+   - /usr/local/bin/node
+ .
+ ## BACKLOG ISSUES
+ .
+ ### ISSUE: mode derive failed
+ .
+ - not all events getting processed before job is removed
+ - temporary workaround in job stop command:
+ .
+     // FIXME: best effort to allow processing of remaining events
+     std::thread::sleep(Duration::from_secs(3));
+ .
+ ### ISSUE: policy validation spread between model.rs and bpf/policy.rs
+ .
+ - need common expression parser and validator
+ .
+ ### ISSUE: some "writes" have empty dst path
+ .
+  - '/usr/bin/bash:'
+   - '/usr/bin/endura:'
+   - '/usr/bin/make:'
+   - '/usr/local/bin/node:'
  .
  ## ISSUE: likely need an "overwrite" policy
  .
