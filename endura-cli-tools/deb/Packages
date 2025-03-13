@@ -1,13 +1,13 @@
 Package: endura-cli-tools
-Version: 0.5.1.5593912
+Version: 0.6.1.f72bb8a
 Architecture: amd64
 Maintainer: Infrared Security, LLC.
-Installed-Size: 12211
-Filename: ./endura-cli-tools_0.5.1.5593912_amd64.deb
-Size: 3258028
-MD5sum: 791fd0dc530f16dd0ab471303e7a283a
-SHA1: e61883586b7cb072f5e39955afa8a0ccae785ab2
-SHA256: 25f815cee615656e77f47e04d5a2863daee361048f0bec51740bcd75777ba403
+Installed-Size: 12219
+Filename: ./endura-cli-tools_0.6.1.f72bb8a_amd64.deb
+Size: 3258272
+MD5sum: 5f99dc46ec0452678d34e1c0357b9e79
+SHA1: 3feb546d781e5dfd51cbfe7850b686facb580d4a
+SHA256: 3e95b1a7e87779ea8084225c176c77e995700e5ec8aa3195deb2416d2dfa4664
 Section: Development
 Priority: optional
 Description: cli tools
@@ -77,53 +77,6 @@ Description: cli tools
    - /usr/local/bin/node:104.16.3.35:443
    - /usr/local/bin/node:104.16.30.34:443
  .
- ### [x] ISSUE: policy validation spread between model.rs and bpf/policy.rs
- .
- - need common expression parser and validator
- .
- ### [x] ISSUE: derived policy does not include context like %workspace%,
- instead showing real value
- .
- -
- /usr/local/bin/node:/home/runner/work/endura-malware-demo/endura-malware-demo/node_modules/.bin
- .
- ### ISSUE: how can we normalize this
- .
- UPDATE: just returning parent path
- UPDATE 2: not sure that's a good idea. reverted.
- .
- to just be node:[path]/node_modules?
-   -
- /usr/local/bin/node:/home/runner/work/endura-malware-demo/endura-malware-demo/node_modules/word-wrap/index.js
-   -
- /usr/local/bin/node:/home/runner/work/endura-malware-demo/endura-malware-demo/node_modules/word-wrap/package.json
-   -
- /usr/local/bin/node:/home/runner/work/endura-malware-demo/endura-malware-demo/node_modules/yocto-queue
-   -
- /usr/local/bin/node:/home/runner/work/endura-malware-demo/endura-malware-demo/node_modules/yocto-queue/index.d.ts
- .
- to just be .git?
-   -
- /usr/lib/git-core/git:/home/runner/work/endura-malware-demo/endura-malware-demo/.git/HEAD
-   -
- /usr/lib/git-core/git:/home/runner/work/endura-malware-demo/endura-malware-demo/.git/config
-   -
- /usr/lib/git-core/git:/home/runner/work/endura-malware-demo/endura-malware-demo/.git/index
-   -
- /usr/lib/git-core/git:/home/runner/work/endura-malware-demo/endura-malware-demo/.git/objects/09/tmp_obj_137KGD
- .
- to just be ~/.npm?
-   -
- /usr/local/bin/node:/home/runner/.npm/_logs/2025-03-06T13_45_18_151Z-debug-0.log
-   -
- /usr/local/bin/node:/home/runner/.npm/_logs/2025-03-06T13_45_20_594Z-debug-0.log
-   -
- /usr/local/bin/node:/home/runner/.npm/_logs/2025-03-06T13_45_21_082Z-debug-0.log
-   -
- /usr/local/bin/node:/home/runner/.npm/_logs/2025-03-06T13_45_22_600Z-debug-0.log
-   -
- /usr/local/bin/node:/home/runner/.npm/_logs/2025-03-06T13_45_24_035Z-debug-0.log
- .
  ## ISSUE: how do we handle programs reading arbitrary /proc/[pid] paths?
  .
    - /usr/local/bin/node:/proc/2445/cgroup
@@ -141,7 +94,34 @@ Description: cli tools
  .
  ## BACKLOG ISSUES
  .
- ### ISSUE: container run/socket - should it accept a tag?
+ ### ISSUE: bpf_path_write_map is getting overloaded
+ .
+ The security_file_permission function in the Linux Security Module (LSM)
+ framework is called for each individual write (or read) operation against a
+ file descriptor, not just once when the file descriptor is opened.
+ When a process performs a write operation using a file descriptor, the kernel's
+ VFS (Virtual File System) layer triggers various security hooks, including
+ security_file_permission. This happens for each distinct system call that
+ performs I/O, such as write(), pwrite(), writev(), etc.
+ The function serves as a hook that allows security modules (like SELinux,
+ AppArmor, etc.) to perform permission checks on each operation, rather than
+ just once at open time. This is important because:
+ .
+ Permissions or security contexts might change while a file descriptor remains
+ open
+ It allows for more granular auditing of file operations
+ Different operations (read vs write) might have different security implications
+ .
+ The general call pattern is that for each write operation, the kernel will
+ invoke security_file_permission with parameters indicating:
+ .
+ The file being accessed
+ The specific permission being requested (MAY_WRITE for writes)
+ .
+ This per-operation checking enables security modules to implement dynamic
+ access controls that can change during the lifetime of an open file descriptor.
+ .
+ ### [x] ISSUE: container run/socket - should it accept a tag?
  .
  - ex: hello-world:latest, hello-world:all?
  .
