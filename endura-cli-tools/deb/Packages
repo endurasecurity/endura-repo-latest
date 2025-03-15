@@ -1,13 +1,13 @@
 Package: endura-cli-tools
-Version: 0.7.2.8b0596c
+Version: 0.7.3.b87da45
 Architecture: amd64
 Maintainer: Infrared Security, LLC.
 Installed-Size: 12143
-Filename: ./endura-cli-tools_0.7.2.8b0596c_amd64.deb
-Size: 3274748
-MD5sum: 5b65aada3dfd199f288ff31284990efc
-SHA1: d168fcf2f2ae411b968ab2459b7bd7fc889a2638
-SHA256: 3b27c3f82b4dc8667c449b628750250833c1d7e7cb78ead04278ae24011dd69a
+Filename: ./endura-cli-tools_0.7.3.b87da45_amd64.deb
+Size: 3274588
+MD5sum: aabda0a70ec701dd1008968c3c4ade7c
+SHA1: 01b5231b3979a99209f03b990cf32d21a0eaef59
+SHA256: f275ff79b94c796a0b69165b0a8b1adca2ab16dd8e66974265336a50c55697c1
 Section: Development
 Priority: optional
 Description: cli tools
@@ -103,6 +103,24 @@ Description: cli tools
  permitted here via path -> path of /proc/[pid]/exe, even if path-open grants
  .
  ## BACKLOG ISSUES
+ .
+ ### ISSUE: Oracle Linux 9.5 UEK does not support "bpf_strncmp" helper
+ .
+ - apparently we can use __weak to provide a fallback? per chatgpt
+ .
+ static inline __weak int bpf_strncmp(const char *s1, const char *s2, __u32 len)
+ {
+     #pragma unroll
+     for (__u32 i = 0; i < len; i++) {
+         char c1, c2;
+         bpf_probe_read_str(&c1, 1, &s1[i]);
+         bpf_probe_read_str(&c2, 1, &s2[i]);
+         if (c1 != c2) return c1 - c2;
+         if (c1 == '\0') break;
+     }
+     return 0;
+ }
+ .
  .
  ### ISSUE: bpf_path_write_map is getting overloaded
  .
