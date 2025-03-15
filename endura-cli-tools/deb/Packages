@@ -1,13 +1,13 @@
 Package: endura-cli-tools
-Version: 0.6.1.f72bb8a
+Version: 0.7.2.8b0596c
 Architecture: amd64
 Maintainer: Infrared Security, LLC.
-Installed-Size: 12219
-Filename: ./endura-cli-tools_0.6.1.f72bb8a_amd64.deb
-Size: 3258272
-MD5sum: 5f99dc46ec0452678d34e1c0357b9e79
-SHA1: 3feb546d781e5dfd51cbfe7850b686facb580d4a
-SHA256: 3e95b1a7e87779ea8084225c176c77e995700e5ec8aa3195deb2416d2dfa4664
+Installed-Size: 12143
+Filename: ./endura-cli-tools_0.7.2.8b0596c_amd64.deb
+Size: 3274748
+MD5sum: 5b65aada3dfd199f288ff31284990efc
+SHA1: d168fcf2f2ae411b968ab2459b7bd7fc889a2638
+SHA256: 3b27c3f82b4dc8667c449b628750250833c1d7e7cb78ead04278ae24011dd69a
 Section: Development
 Priority: optional
 Description: cli tools
@@ -77,7 +77,7 @@ Description: cli tools
    - /usr/local/bin/node:104.16.3.35:443
    - /usr/local/bin/node:104.16.30.34:443
  .
- ## ISSUE: how do we handle programs reading arbitrary /proc/[pid] paths?
+ ## ISSUE: [x] how do we handle programs reading arbitrary /proc/[pid] paths?
  .
    - /usr/local/bin/node:/proc/2445/cgroup
    - /usr/local/bin/node:/proc/2445/maps
@@ -91,6 +91,16 @@ Description: cli tools
    - /usr/local/bin/node:/proc/2497/maps
    - /usr/local/bin/node:/proc/2508/cgroup
    - /usr/local/bin/node:/proc/2508/maps
+   - /usr/bin/sudo:/proc/1/limits
+   - /usr/bin/sudo:/proc/2550/loginuid
+   - /usr/bin/sudo:/proc/2550/stat
+ .
+ proc files relevant to what we enforce:
+ .
+ /proc/[pid]/{auxv,environ,fd,io,ksm_merging_pages,ksm_stat,mem,mountstats,mountstats,pagemap,patch_state,personality,syscall}
+ .
+ UPDATE: we treat certain files under /proc/ as special, so must be explicitly
+ permitted here via path -> path of /proc/[pid]/exe, even if path-open grants
  .
  ## BACKLOG ISSUES
  .
